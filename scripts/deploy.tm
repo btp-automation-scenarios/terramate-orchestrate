@@ -8,7 +8,7 @@ script "terraform" "deploy" {
       ["terraform", "plan", "-out", "out.tfplan", "-lock=false", {
         enable_sharing = true
       }],
-      ["terraform", "apply", "-input=false", "-auto-approve", "-lock-timeout=5m", "out.tfplan", {
+      ["terraform", "apply", "-input=false", "-auto-approve", "  -lock-timeout=5m", "out.tfplan", {
         enable_sharing = true
       }],
     ]
