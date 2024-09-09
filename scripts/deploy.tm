@@ -1,4 +1,4 @@
-script "terraform" "deploy" {
+script "deploy" {
   job {
     name        = "Terraform Deployment"
     description = "Initialize, validate, plan, and apply Terraform changes."
