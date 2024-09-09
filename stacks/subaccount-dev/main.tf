@@ -8,7 +8,7 @@ locals {
 }
 
 
-resource "btp_subaccount" "sa-dev-base" {
+resource "btp_subaccount" "sa_dev_base" {
   name      = var.subaccount_name
   subdomain = join("-", ["sa-dev-base", random_uuid.uuid.result])
   region    = lower(var.region)
@@ -16,7 +16,7 @@ resource "btp_subaccount" "sa-dev-base" {
 
 # Fetch all available environments for the subaccount
 data "btp_subaccount_environments" "all" {
-  subaccount_id = btp_subaccount.dc_mission.id
+  subaccount_id = btp_subaccount.sa_dev_base.id
 }
 
 # Take the landscape label from the first CF environment if no environment label is provided
@@ -25,8 +25,8 @@ resource "terraform_data" "cf_landscape_label" {
 }
 
 # Create the Cloud Foundry environment instance
-resource "btp_subaccount_environment_instance" "cloudfoundry" {
-  subaccount_id    = btp_subaccount.dc_mission.id
+resource "btp_subaccount_environment_instance" "cfenv_dev_base" {
+  subaccount_id    = btp_subaccount.sa_dev_base.id
   name             = local.subaccount_cf_org
   environment_type = "cloudfoundry"
   service_name     = "cloudfoundry"

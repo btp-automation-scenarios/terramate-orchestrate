@@ -10,5 +10,5 @@ terraform {
 }
 
 provider "btp" {
-  globalaccount  = var.globalaccount
+  globalaccount = var.globalaccount
 }

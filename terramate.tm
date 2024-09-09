@@ -1,7 +1,8 @@
 terramate {
   config {
     experiments = [
-      "outputs-sharing"
+      "outputs-sharing",
+      "scripts"
     ]
   }
 }
