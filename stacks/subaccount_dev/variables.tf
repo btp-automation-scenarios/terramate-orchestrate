@@ -7,7 +7,7 @@ variable "globalaccount" {
 variable "subaccount_name" {
   description = "Name of the subaccount"
   type        = string
-  default     = "subacoount-dev"
+  default     = "subacount-dev"
 }
 
 variable "region" {
@@ -20,5 +20,4 @@ variable "cf_plan_name" {
   description = "Name of the Cloud Foundry plan"
   type        = string
   default     = "standard"
-
 }

@@ -296,9 +296,114 @@ From a configuration perspective we are complete. Now we need to execute Terrama
 
 ### Script it!
 
+Taking one step back, our goal is to automate the provisioning flow which means issue several Terraform commands. We do not want to do that manually one command at a time, but want to have a pre-defined flow for setting up and also tearing down the infrastructure. Again Terramate offers a solution for that namely using scripts.
 
+As the scripting is still in experimental stage, we must activate it in the already existing configuration in the `terramate.tm` file. We add the value `scripts` to the `experiments` list, so the file now looks like this:
+
+```terraform
+terramate {
+  config {
+    experiments = [
+      "outputs-sharing",
+      "scripts"
+    ]
+  }
+}
+
+sharing_backend "default" {
+  type     = terraform
+  filename = "sharing_generated.tf"
+  command  = ["terraform", "output", "-json"]
+}
+```
+
+Next we define the two scripts. Wecall them `deploy.tm` and `teardown.tm` and we store them in the `stacks` directory.
+
+The `deploy.tm` contains the command flow from initialization, validation, planning and applying of the Terraform configuration. According to the Terramate documentation the file has the following structure:
+
+```terraform
+script "deploy" {
+  job {
+    name        = "Terraform Deployment"
+    description = "Init, validate, plan, and apply Terraform changes."
+    commands = [
+      ["terraform", "init"],
+      ["terraform", "validate"],
+      ["terraform", "plan", "-out", "out.tfplan", "-lock=false", {
+        enable_sharing = true
+      }],
+      ["terraform", "apply", "-input=false", "-auto-approve", "-lock-timeout=5m", "out.tfplan", {
+        enable_sharing = true
+      }],
+    ]
+  }
+}
+```
+
+The structure is intuitive and consistent with other objects in Terramate. The only thing that must not be forgoten is to add the option that the output sharing is enabled when executing the commands via `enable_sharing = true`.
+
+The script for the teardown follows the same logic and looks like this;
+
+```terraform
+script "teardown" {
+  job {
+    name        = "Terraform Teardown"
+    description = "Destroy Terraform setup."
+    commands = [
+      ["terraform", "destroy", "-input=false", "-auto-approve", "-lock-timeout=5m", {
+        enable_sharing = true
+      }],
+    ]
+  }
+}
+```
+
+Let us first check if we did things correctly and Terramarte finds the scripts. We do so via
+
+```bash
+terramate script list
+```
+
+The output should look like this:
+
+![Output of terramate script list in bash](./pics/terramate_script_list.png)
+
+Looks good. Now let us check where the scripts can be applied to based on their location in the directories. We do so via the folowing command:
+
+```bash
+terramate script tree
+```
+
+The output looks like this:
+
+![Output of terramate script tree in bash](./pics/terramate_script_tree.png)
+
+Also looks good. The scripts can be applied to our stacks.
+
+The directory structure with all the implementations in place looks like this:
+
+![Final directory structure of Terramate setup](./pics/terramate_project_structure.png)
 
 ### 3, 2, 1 ... and Action
+
+The basic challenge of the dependency remains, so we cannot spin up everything with one single command. The advanatge of this setup is that we can now do a sequence of consistent and thanks to scripting short Terramate commands to make things happen, without worrying about dependencies and propagating the right data from one stack to another. In addition the setup remains unchanged no matter if we are running locally or in a CI/CD pipeline which makes debugging much easier.
+
+Let's bring all the bits and pieces together and spin up the infrsstructure with the following commands (and don't forget to set your authentication information for SAP BTP and Cloud Foundry before):
+
+```bash
+terramate script run -X --tags=subaccount:dev deploy
+```
+
+The very first run needs to be restriced to the subaccount as the Cloud Foundry environment needs ot be created. After that we can process everything via:
+
+```bash
+terramate script run -X deploy
+```
+
+> **Note** I use the `-X` option as I am lazy and do not want to commit everytime I do some changes or fixes when trying things out. In a productive steup I would not recommend that
+
+
+We can now also tear things down via the sceond script 
 
 ## Summary
 
@@ -307,6 +412,10 @@ There is no perfect way to solve this challenge
 Same setup possible in CI/CD and locally
 
 Documentation ... you find somehow everything, but the new features need some morelove when it comes ot documentation and sample code. Adoption is easier and so is getting feedback
+
+VS Code Syntax error in the experimental artifacts. It seems not to recognize that the features are active
+
+Wish for improvement: filtering already in the scripts
 
 ### Where to find the code
 

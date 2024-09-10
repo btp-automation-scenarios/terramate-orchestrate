@@ -1,8 +1,9 @@
 script "deploy" {
   job {
     name        = "Terraform Deployment"
-    description = "Validate, plan, and apply Terraform changes."
+    description = "Init, validate, plan, and apply Terraform changes."
     commands = [
+      ["terraform", "init"],
       ["terraform", "validate"],
       ["terraform", "plan", "-out", "out.tfplan", "-lock=false", {
         enable_sharing = true
