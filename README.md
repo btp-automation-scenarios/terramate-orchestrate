@@ -2,7 +2,7 @@
 
 Sample repository for showcasing setups with complex dependencies via leveraging experimental features of Terramate.
 
-You find all details in the blog post [Experimenting with Terramate and SAP BTP]() on [dev.to](https://dev.to/).
+You find all details in the blog post [Experimenting with Terramate and SAP BTP](https://dev.to/lechnerc77/experimenting-with-terramate-and-sap-btp-22m1) on [dev.to](https://dev.to/).
 
 ## Set environment variables
 
