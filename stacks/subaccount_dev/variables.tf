@@ -1,7 +1,6 @@
 variable "globalaccount" {
   description = "Name of the global account"
   type        = string
-  default     = "terraformintprod"
 }
 
 variable "subaccount_name" {
