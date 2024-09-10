@@ -393,17 +393,18 @@ Let's bring all the bits and pieces together and spin up the infrsstructure with
 ```bash
 terramate script run -X --tags=subaccount:dev deploy
 ```
-
 The very first run needs to be restriced to the subaccount as the Cloud Foundry environment needs ot be created. After that we can process everything via:
 
 ```bash
 terramate script run -X deploy
 ```
 
+After that you will have all the desired 
+
 > **Note** I use the `-X` option as I am lazy and do not want to commit everytime I do some changes or fixes when trying things out. In a productive steup I would not recommend that
 
 
-We can now also tear things down via the sceond script 
+We can now also tear things down via the sceond script
 
 ## Summary
 
