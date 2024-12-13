@@ -1,8 +1,8 @@
 // TERRAMATE: GENERATED AUTOMATICALLY DO NOT EDIT
 
 variable "cf_api_url" {
-  type = string
+  type = any
 }
 variable "cf_org_id" {
-  type = string
+  type = any
 }
