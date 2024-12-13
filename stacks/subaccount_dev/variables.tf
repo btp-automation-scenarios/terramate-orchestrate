@@ -18,5 +18,5 @@ variable "region" {
 variable "cf_plan_name" {
   description = "Name of the Cloud Foundry plan"
   type        = string
-  default     = "standard"
+  default     = "trial"
 }
